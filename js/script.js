@@ -22,7 +22,6 @@ var gMap = svgMap.append("g")
 
 
 //SET UP THE COLOR SCALES THAT TAKE INPUT VALUE AND OUTPUT A COLOR
-
 //color scale for initial Can_P value
 var colorCan = d3.scale.quantize()
                     .range(["#adac8f", "#98a381", "#849974", "#718e67", "#5f845b", "#4e794f", "#3e6e44", "#2g633a", "#205831", "#124d28"])
@@ -67,20 +66,20 @@ var colorPaved = d3.scale.quantize()
 //CALL THE DATA and ADD THE MAP
 //d3.json call starts here
 d3.json("data/landcoversumm.geojson", function(lcData) {
-	window.test = lcData;
+  //window.test = lcData;
 	//console.log(lcData);
 
-	// create a d3.geo.path to convert GeoJSON to SVG:
-	var transform = d3.geo.transform({point: projectPoint}),
+    // create a d3.geo.path to convert GeoJSON to SVG:
+    var transform = d3.geo.transform({point: projectPoint}),
       path = d3.geo.path().projection(transform);
 
     // create path elements for each of the features using D3’s data join:
     var feature = gMap.selectAll("path")
-    	.data(lcData.features)
-    	.enter()
-    	.append("path")
-    	.attr("d",path)
-    	.style("fill", function(d) {
+      .data(lcData.features)
+      .enter()
+      .append("path")
+      .attr("d",path)
+      .style("fill", function(d) {
                                 //Get data value
                                 var value = d.properties.Can_P;
                                 //window.test=value;
@@ -94,36 +93,36 @@ d3.json("data/landcoversumm.geojson", function(lcData) {
                    });
 
     //assign a class to a D3 feature based on data attributes
-	feature.attr('id',function(d) {return d.properties.UniqueID;})
-    	.attr('class', function(d) {return d.properties.Can_P;})
-    	.attr('bin', function(d) {return colorCan(d.properties.Can_P);});
+  feature.attr('id',function(d) {return d.properties.UniqueID;})
+      .attr('class', function(d) {return d.properties.Can_P;})
+      .attr('bin', function(d) {return colorCan(d.properties.Can_P);});
 
     map.on("viewreset", reset);
     reset();
 
 
-  	// Reposition the SVG to cover the features.  Comput the projected bounding box of our features using our custom transform to convert the longitude and latitude to pixels:
-	  function reset() {
-	    var bounds = path.bounds(lcData),
-	        topLeft = bounds[0],
-	        bottomRight = bounds[1];
-	        //here we are setting width and height of the attribute layer based on the bounds.  
+    // Reposition the SVG to cover the features.  Comput the projected bounding box of our features using our custom transform to convert the longitude and latitude to pixels:
+    function reset() {
+      var bounds = path.bounds(lcData),
+          topLeft = bounds[0],
+          bottomRight = bounds[1];
+          //here we are setting width and height of the attribute layer based on the bounds.  
 
-	    //set the dimensions of the SVG with sufficient padding to display features above or to the left of the origin. this is part of "viewreset" event so SVG is repositioned and re-rendered whenever the map zooms
-	    svgMap .attr("width", bottomRight[0] - topLeft[0])
-	        .attr("height", bottomRight[1] - topLeft[1])
-	        .style("left", topLeft[0] + "px")
-	        .style("top", topLeft[1] + "px");
-	    gMap   .attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-	    //this is actually where we draw the shape on the map; out of the data that we passed turn this into an SVG attribute
-	    feature.attr("d", path);
-	  }
+      //set the dimensions of the SVG with sufficient padding to display features above or to the left of the origin. this is part of "viewreset" event so SVG is repositioned and re-rendered whenever the map zooms
+      svgMap .attr("width", bottomRight[0] - topLeft[0])
+          .attr("height", bottomRight[1] - topLeft[1])
+          .style("left", topLeft[0] + "px")
+          .style("top", topLeft[1] + "px");
+      gMap   .attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+      //this is actually where we draw the shape on the map; out of the data that we passed turn this into an SVG attribute
+      feature.attr("d", path);
+    }
 
-	// Use Leaflet to implement a D3 geometric transformation. 
-	  function projectPoint(x, y) {
-	    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-	    this.stream.point(point.x, point.y);
-	  }
+  // Use Leaflet to implement a D3 geometric transformation. 
+    function projectPoint(x, y) {
+      var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+      this.stream.point(point.x, point.y);
+    }
 
 	//call the function that creates the histogram and appends it to the #hist div
 	  drawChartCan(lcData);
