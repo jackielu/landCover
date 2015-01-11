@@ -65,9 +65,17 @@ var colorPaved = d3.scale.quantize()
 
 //CALL THE DATA and ADD THE MAP
 //d3.json call starts here
-d3.json("data/landcoversumm.geojson", function(lcData) {
-  //window.test = lcData;
-	//console.log(lcData);
+d3.json("data/landcoversumm.geojson", function(dataset) {
+  lcData = dataset;  //this is the entire dataset with all properties
+  window.lcData = lcData;
+	// console.log(lcData);
+
+  // var dCan_P = d.properties.Can_P;
+
+  var dCan_P = lcData.features.map(function (d) {
+      return d.properties.Can_P
+  });  //this is an array the Can_P percent canopy cover value 
+  window.dCan_P = dCan_P;
 
     // create a d3.geo.path to convert GeoJSON to SVG:
     var transform = d3.geo.transform({point: projectPoint}),
@@ -92,10 +100,19 @@ d3.json("data/landcoversumm.geojson", function(lcData) {
                                 }
                    });
 
-    //assign a class to a D3 feature based on data attributes
-  feature.attr('id',function(d) {return d.properties.UniqueID;})
-      .attr('class', function(d) {return d.properties.Can_P;})
-      .attr('bin', function(d) {return colorCan(d.properties.Can_P);});
+    
+    // create path elements for each of the features using D3’s data join:
+    // var feature = gMap.selectAll("path")
+    //   .data(dCan_P)
+    //   .enter()
+    //   .append("path")
+    //   .attr("d",path);
+    //   .style("fill", function(d) {return colorCan(d);});
+
+  // //assign a class to a D3 feature based on data attributes
+  // feature.attr('id',function(d) {return d.properties.UniqueID;})
+  //     .attr('class', function(d) {return d.properties.Can_P;})
+  //     .attr('bin', function(d) {return colorCan(d.properties.Can_P);});
 
     map.on("viewreset", reset);
     reset();
