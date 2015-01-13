@@ -109,10 +109,10 @@ d3.json("data/landcoversumm.geojson", function(dataset) {
     //   .attr("d",path);
     //   .style("fill", function(d) {return colorCan(d);});
 
-  // //assign a class to a D3 feature based on data attributes
-  // feature.attr('id',function(d) {return d.properties.UniqueID;})
-  //     .attr('class', function(d) {return d.properties.Can_P;})
-  //     .attr('bin', function(d) {return colorCan(d.properties.Can_P);});
+  //assign a class to a D3 feature based on data attributes
+  feature.attr('id',function(d) {return d.properties.UniqueID;})
+      .attr('class', function(d) {return d.properties.Can_P;})
+      .attr('bin', function(d) {return colorCan(d.properties.Can_P);});
 
     map.on("viewreset", reset);
     reset();
